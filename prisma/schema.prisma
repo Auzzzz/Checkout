@@ -23,8 +23,8 @@ model Items {
 
 model Users {
   id           Int            @id @default(autoincrement())
-  name         String
-  email        String
+  name         String         @unique
+  email        String         @unique
   password     String
   GroupMembers GroupMembers[]
   Logs         Logs[]
@@ -52,8 +52,8 @@ model GroupMembers {
   groupId Int
   userId  Int
 
-  group Groups @relation(fields: [groupId], references: [id])
-  users Users  @relation(fields: [userId], references: [id])
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  users Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model GroupVenues {
@@ -61,8 +61,8 @@ model GroupVenues {
   groupId Int
   venueId Int
 
-  group Groups @relation(fields: [groupId], references: [id])
-  venue Venues @relation(fields: [venueId], references: [id])
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  venue Venues @relation(fields: [venueId], references: [id], onDelete: Cascade)
 }
 
 model GroupItems {
@@ -70,8 +70,8 @@ model GroupItems {
   groupId Int
   itemId  Int
 
-  group Groups @relation(fields: [groupId], references: [id])
-  item  Items  @relation(fields: [itemId], references: [id])
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  item  Items  @relation(fields: [itemId], references: [id], onDelete: Cascade)
 }
 
 model Flags {
@@ -86,8 +86,8 @@ model Group_Flags {
   groupId Int
   flagId  Int
 
-  group Groups @relation(fields: [groupId], references: [id])
-  flag  Flags  @relation(fields: [flagId], references: [id])
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  flag  Flags  @relation(fields: [flagId], references: [id], onDelete: Cascade)
 }
 
 model Logs {

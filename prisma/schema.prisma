@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Items {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  GroupItems  GroupItems[]
+
+  @@index([name])
+}
+
+model Users {
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String
+  password     String
+  GroupMembers GroupMembers[]
+  Logs         Logs[]
+}
+
+model Venues {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  GroupVenues GroupVenues[]
+}
+
+model Groups {
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  GroupMembers GroupMembers[]
+  GroupVenues  GroupVenues[]
+  GroupItems   GroupItems[]
+  Group_Flags  Group_Flags[]
+}
+
+model GroupMembers {
+  id      Int @id @default(autoincrement())
+  groupId Int
+  userId  Int
+
+  group Groups @relation(fields: [groupId], references: [id])
+  users Users  @relation(fields: [userId], references: [id])
+}
+
+model GroupVenues {
+  id      Int @id @default(autoincrement())
+  groupId Int
+  venueId Int
+
+  group Groups @relation(fields: [groupId], references: [id])
+  venue Venues @relation(fields: [venueId], references: [id])
+}
+
+model GroupItems {
+  id      Int @id @default(autoincrement())
+  groupId Int
+  itemId  Int
+
+  group Groups @relation(fields: [groupId], references: [id])
+  item  Items  @relation(fields: [itemId], references: [id])
+}
+
+model Flags {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  Group_Flags Group_Flags[]
+}
+
+model Group_Flags {
+  id      Int @id @default(autoincrement())
+  groupId Int
+  flagId  Int
+
+  group Groups @relation(fields: [groupId], references: [id])
+  flag  Flags  @relation(fields: [flagId], references: [id])
+}
+
+model Logs {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  action String
+
+  createdAt DateTime @default(now())
+
+  user Users @relation(fields: [userId], references: [id])
+}
